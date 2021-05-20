@@ -1,15 +1,16 @@
 package com.p5.adoptions.service;
 
 
-import com.p5.adoptions.repository.cats.Cat;
+import com.p5.adoptions.model.CatDTO;
+import com.p5.adoptions.model.ListDTO;
+import com.p5.adoptions.model.adapters.CatAdapter;
 import com.p5.adoptions.repository.cats.CatRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class CatService
-{
+public class CatService {
 
     private final CatRepository catRepository;
 
@@ -18,29 +19,28 @@ public class CatService
         this.catRepository = catRepository;
     }
 
-    public void  addCat(Cat cat)
-    {
-        if(cat.getName()==null||cat.getUrl()==null)
-        {
+    public void addCat(CatDTO cat) {
+        if (cat.getName() == null || cat.getPhotoUrl() == null) {
             throw new RuntimeException("Cat must have a name and a photo!");
         }
-        Cat catToSave= new Cat()
-                .setName(cat.getName())
-                .setUrl(cat.getUrl());
-        catRepository.save(catToSave);
+        catRepository.save(CatAdapter.fromDto(cat));
     }
 
-    public List<Cat> findAll()
-    {
-        return catRepository.findAll();
+    public ListDTO<CatDTO> findAll() {
+
+        List<CatDTO> cats = CatAdapter.toListDto(catRepository.findAll());
+
+        return new ListDTO<CatDTO>((int) catRepository.count(), cats);
+
+
     }
 
-    public Cat findCat(String name)
-    {
-        if(name==null|| name=="")
-        {
-            throw  new RuntimeException("Must specify name!");
+    public CatDTO findCat(String name) {
+        if (name == null || name == "") {
+            throw new RuntimeException("Must specify name!");
         }
-      return   catRepository.findCatByName(name);
+
+
+        return CatAdapter.toDto(catRepository.findCatByName(name));
     }
 }
