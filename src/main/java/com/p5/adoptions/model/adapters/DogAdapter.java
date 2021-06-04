@@ -12,12 +12,13 @@ public class DogAdapter {
 
     public static Dog fromDto(DogDTO dog)
     {
-        return  new Dog().setName(dog.getName()).setUrl(dog.getPhotoUrl());
+        return (Dog) new Dog().setName(dog.getName()).setPhotoUrl(dog.getPhotoUrl());
+
 
     }
     public static DogDTO toDto(Dog dog)
     {
-        return new DogDTO(dog.getName(), dog.getUrl(),dog.getId());
+        return new DogDTO(dog.getName(), dog.getPhotoUrl(),dog.getId());
     }
 
     public static List<DogDTO> toListDto(List<Dog> dogList)

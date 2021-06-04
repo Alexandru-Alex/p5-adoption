@@ -12,12 +12,12 @@ public class CatAdapter {
 
     public static Cat fromDto(CatDTO cat)
     {
-        return  new Cat().setName(cat.getName()).setUrl(cat.getPhotoUrl());
+        return (Cat) new Cat().setName(cat.getName()).setPhotoUrl(cat.getPhotoUrl());
     }
 
     public static CatDTO toDto(Cat cat)
     {
-        return new CatDTO(cat.getName(), cat.getUrl(),cat.getId());
+        return new CatDTO(cat.getName(), cat.getPhotoUrl(),cat.getId());
     }
 
 
