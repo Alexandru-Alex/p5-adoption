@@ -2,10 +2,10 @@ package com.p5.adoptions.api.controllers;
 
 
 import com.p5.adoptions.model.AnimalShelterDTO;
-import com.p5.adoptions.repository.shelter.AnimalShelter;
 import com.p5.adoptions.service.AnimalShelterService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("v1/shelters")
@@ -15,6 +15,14 @@ public class AnimalShelterController
 
     public AnimalShelterController(AnimalShelterService shelterService) {
         this.shelterService = shelterService;
+    }
+
+
+    @GetMapping
+    private  ResponseEntity<List<AnimalShelterDTO>> getAll()
+    {
+        return ResponseEntity.ok(shelterService.getAll());
+
     }
 
 
@@ -28,6 +36,12 @@ public class AnimalShelterController
     private ResponseEntity<AnimalShelterDTO> createShelter(@RequestBody AnimalShelterDTO shelterDTO)
     {
         return  ResponseEntity.ok(shelterService.createShelter(shelterDTO));
+    }
+
+    @PutMapping
+    private ResponseEntity<AnimalShelterDTO> updateShelter(@RequestBody AnimalShelterDTO shelterDTO)
+    {
+        return  ResponseEntity.ok(shelterService.updateShelter(shelterDTO));
     }
 
 }

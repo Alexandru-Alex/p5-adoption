@@ -3,16 +3,20 @@ package com.p5.adoptions.service;
 
 import com.p5.adoptions.model.AnimalShelterDTO;
 import com.p5.adoptions.model.adapters.AnimalShelterAdapter;
+import com.p5.adoptions.model.validations.OnCreate;
+import com.p5.adoptions.model.validations.OnUpdate;
 import com.p5.adoptions.repository.animals.Animal;
 import com.p5.adoptions.repository.animals.AnimalRepository;
 import com.p5.adoptions.repository.shelter.AnimalShelter;
 import com.p5.adoptions.repository.shelter.AnimalShelterRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
-import java.util.ArrayList;
+import javax.validation.Valid;
 import java.util.List;
 
 @Service
+@Validated
 public class AnimalShelterService {
 
     private final AnimalShelterRepository animalShelterRepository;
@@ -27,25 +31,23 @@ public class AnimalShelterService {
     return AnimalShelterAdapter.toDto(animalShelterRepository.getOne(id)) ;
     }
 
-    public AnimalShelterDTO createShelter(AnimalShelterDTO shelterDTO) {
+    @Validated(OnCreate.class)
+    public AnimalShelterDTO createShelter(@Valid AnimalShelterDTO shelterDTO) {
 
         AnimalShelter animalShelter= AnimalShelterAdapter.fromDto(shelterDTO);
-        animalShelter.setId(null);
-        for (Animal animal: animalShelter.getAnimals())
-        {
-            animal.setId(null);
-        }
-
-        List<Animal> animals=new ArrayList<>();
-        for(Animal animal:animalShelter.getAnimals())
-        {
-            animal.setId(null);
-
-        }
-
-        animalShelter.setAnimals(animals);
-
 
         return AnimalShelterAdapter.toDto(animalShelterRepository.save(animalShelter));
+    }
+
+    @Validated(OnUpdate.class)
+    public AnimalShelterDTO updateShelter(@Valid AnimalShelterDTO shelterDTO) {
+
+        animalShelterRepository.findById(shelterDTO.getId()).orElseThrow(()-> new RuntimeException(" Shelter-ul nu a fost gasit"));
+
+       return AnimalShelterAdapter.toDto(animalShelterRepository.save(AnimalShelterAdapter.fromDto(shelterDTO)));
+    }
+
+    public List<AnimalShelterDTO> getAll() {
+        return AnimalShelterAdapter.toDTOList(animalShelterRepository.findAll());
     }
 }
